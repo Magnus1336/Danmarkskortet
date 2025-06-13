@@ -101,7 +101,6 @@ function processDemographicData(rows) {
                 households: 0
             };
         }
-        
         // Aggregate data by municipality and date
         const data = demographicData[key];
         data.pop_total += row.pop_total || 0;

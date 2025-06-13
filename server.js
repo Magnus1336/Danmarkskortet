@@ -14,15 +14,52 @@ app.use(express.json());
 // Serve static files from the 'public' directory
 app.use(express.static(path.join(__dirname, 'public')));
 
-// API endpoint to get demographic data
-app.get('/api/demographics', (req, res) => {
+// API endpoint to get parish demographic data
+app.get('/api/parish-demographics', (req, res) => {
     try {
         const data = fs.readFileSync(path.join(__dirname, 'data', 'danish_parish_demographics.csv'), 'utf8');
         res.setHeader('Content-Type', 'text/csv');
         res.send(data);
     } catch (error) {
-        console.error('Error reading demographic data:', error);
-        res.status(500).json({ error: 'Failed to load demographic data' });
+        console.error('Error reading parish demographic data:', error);
+        res.status(500).json({ error: 'Failed to load parish demographic data' });
+    }
+});
+
+// API endpoint to get municipality demographic data
+app.get('/api/municipality-demographics', (req, res) => {
+    try {
+        const csvData = fs.readFileSync(path.join(__dirname, 'data', 'dk_region_municipality_demo_mock.csv'), 'utf8');
+        
+        // Parse CSV to JSON
+        const lines = csvData.split('\n');
+        const headers = lines[0].split(';').map(h => h.trim());
+        
+        const result = [];
+        for (let i = 1; i < lines.length; i++) {
+            if (!lines[i].trim()) continue;
+            
+            const values = lines[i].split(';');
+            const entry = {};
+            
+            headers.forEach((header, index) => {
+                let value = values[index] ? values[index].trim() : '';
+                
+                // Convert numeric values to numbers
+                if (!isNaN(value) && value !== '') {
+                    value = parseFloat(value);
+                }
+                
+                entry[header] = value;
+            });
+            
+            result.push(entry);
+        }
+        
+        res.json(result);
+    } catch (error) {
+        console.error('Error reading municipality demographic data:', error);
+        res.status(500).json({ error: 'Failed to load municipality demographic data' });
     }
 });
 
