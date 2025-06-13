@@ -1,0 +1,17 @@
+date;country;region;municipality;parish;pop_total;pop_male;pop_female;births;deaths;immigration;emigration;households
+2024-01-01;Denmark;Region Hovedstaden;København;København;800000;390000;410000;500;400;1000;800;400000
+2024-01-01;Denmark;Region Hovedstaden;Frederiksberg;Frederiksberg;104000;50000;54000;65;52;130;104;52000
+2024-01-01;Denmark;Region Hovedstaden;Gentofte;Gentofte;74000;36000;38000;46;37;92;74;37000
+2024-01-01;Denmark;Region Hovedstaden;Gladsaxe;Gladsaxe;69000;34000;35000;43;35;86;69;34500
+2024-01-01;Denmark;Region Hovedstaden;Lyngby-Taarbæk;Lyngby-Taarbæk;56000;27000;29000;35;28;70;56;28000
+2024-01-01;Denmark;Region Hovedstaden;Rudersdal;Rudersdal;56000;27000;29000;35;28;70;56;28000
+2024-01-01;Denmark;Region Hovedstaden;Hørsholm;Hørsholm;25000;12000;13000;16;13;31;25;12500
+2024-01-01;Denmark;Region Hovedstaden;Furesø;Furesø;41000;20000;21000;26;21;51;41;20500
+2024-01-01;Denmark;Region Hovedstaden;Allerød;Allerød;25000;12000;13000;16;13;31;25;12500
+2024-01-01;Denmark;Region Hovedstaden;Fredensborg;Fredensborg;41000;20000;21000;26;21;51;41;20500
+2024-01-01;Denmark;Region Hovedstaden;Helsingør;Helsingør;63000;31000;32000;39;32;79;63;31500
+2024-01-01;Denmark;Region Hovedstaden;Hillerød;Hillerød;52000;25000;27000;33;26;65;52;26000
+2024-01-01;Denmark;Region Hovedstaden;Bornholm;Bornholm;40000;19500;20500;25;20;50;40;20000
+2024-01-01;Denmark;Region Hovedstaden;Frederikssund;Frederikssund;45000;22000;23000;28;23;56;45;22500
+2024-01-01;Denmark;Region Hovedstaden;Halsnæs;Halsnæs;31000;15000;16000;19;16;39;31;15500
+2024-01-01;Denmark;Region Hovedstaden;Gribskov;Gribskov;41000;20000;21000;26;21;51;41;20500

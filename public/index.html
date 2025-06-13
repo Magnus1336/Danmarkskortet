@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danmarkskortet - Interactive Denmark Map</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://d3js.org/topojson.v3.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Danmarkskortet</h1>
+            <button id="menu-toggle" class="menu-toggle" aria-label="Toggle menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </header>
+
+        <!-- Sidebar Menu -->
+        <div id="sidebar" class="sidebar">
+            <div class="sidebar-content">
+                <h3>Visualization Controls</h3>
+                
+                <!-- Region Type Selector -->
+                <div class="control-group">
+                    <h4>Region Type</h4>
+                    <div class="radio-group">
+                        <label class="radio-container">
+                            <input type="radio" name="region-type" value="region" checked>
+                            <span class="checkmark"></span>
+                            Region
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="region-type" value="municipality">
+                            <span class="checkmark"></span>
+                            Municipality
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="region-type" value="parish">
+                            <span class="checkmark"></span>
+                            Parish
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Date Slider -->
+                <div class="control-group">
+                    <h4>Date</h4>
+                    <div class="date-slider-container">
+                        <input type="range" id="date-slider" min="0" max="2" value="0" step="1" class="slider">
+                        <div class="date-labels">
+                            <span>Jan 2024</span>
+                            <span>Jul 2024</span>
+                            <span>Jan 2025</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Data Type Selector -->
+                <div class="control-group">
+                    <h4>Data Type</h4>
+                    <div class="radio-group">
+                        <label class="radio-container">
+                            <input type="radio" name="data-type" value="population" checked>
+                            <span class="checkmark"></span>
+                            Population
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="data-type" value="births">
+                            <span class="checkmark"></span>
+                            Births
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="data-type" value="deaths">
+                            <span class="checkmark"></span>
+                            Deaths
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="data-type" value="immigration">
+                            <span class="checkmark"></span>
+                            Immigration
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="data-type" value="emigration">
+                            <span class="checkmark"></span>
+                            Emigration
+                        </label>
+                        <label class="radio-container">
+                            <input type="radio" name="data-type" value="households">
+                            <span class="checkmark"></span>
+                            Households
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <main>
+            <div id="map-container">
+                <div id="tooltip"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="js/map.js"></script>
+    <script src="js/menu.js"></script>
+</body>
+</html>
