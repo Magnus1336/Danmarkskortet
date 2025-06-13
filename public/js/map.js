@@ -67,9 +67,9 @@ async function loadDemographicData() {
     try {
         // For now, we'll use the data from the Python script
         // In a real application, you would load this from your database or API
-        const response = await fetch('data/danish_parish_demographics.csv');
+        const response = await fetch('data/danish_region_municipality_demo_mock.csv');
         if (!response.ok) throw new Error('Failed to load demographic data');
-        
+        console.log(response);
         const csvText = await response.text();
         const rows = d3.csvParse(csvText, d3.autoType);
         
@@ -84,7 +84,6 @@ async function loadDemographicData() {
 // Process demographic data into a more usable format
 function processDemographicData(rows) {
     demographicData = {};
-    
     rows.forEach(row => {
         const key = `${row.municipality}_${row.date}`;
         if (!demographicData[key]) {
