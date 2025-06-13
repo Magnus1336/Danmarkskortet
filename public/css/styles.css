@@ -44,36 +44,23 @@ header {
     left: 0;
     right: 0;
     height: var(--header-height);
-    background-color: transparent;
+    background-color: #FFFFFF;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 0 2rem;
     z-index: 1000;
-    transition: background-color 0.3s ease;
-}
-
-/* Add a subtle shadow to the menu toggle for better visibility */
-.menu-toggle {
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 4px;
-    padding: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
-
-/* Make the header slightly opaque when menu is open */
-.sidebar-open header {
-    background-color: rgba(255, 255, 255, 0.95);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Burger menu button */
 .menu-toggle {
-    background: none;
+    background: #FFFFFF;
     border: none;
+    border-radius: 4px;
     cursor: pointer;
     padding: 10px;
     z-index: 1001;
+    box-shadow: none;
 }
 
 .menu-toggle span {
@@ -88,16 +75,27 @@ header {
 /* Sidebar styles */
 .sidebar {
     position: fixed;
-    top: 0;
+    top: var(--header-height);
     right: calc(-1 * var(--sidebar-width));
     width: var(--sidebar-width);
-    height: 100vh;
-    background-color: white;
-    box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-    transition: right var(--transition-speed) ease;
+    height: calc(100vh - var(--header-height));
+    background-color: transparent;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px); /* For Safari */
+    box-shadow: none;
+    transition: all var(--transition-speed) ease;
     z-index: 1000;
     overflow-y: auto;
     padding-top: var(--header-height);
+    border-left: 1px solid transparent;
+}
+
+/* Ensure content is readable with the blur effect */
+.sidebar-content {
+    background: transparent;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin: 1rem;
 }
 
 .sidebar.open {
@@ -112,7 +110,7 @@ header {
     color: var(--primary-color);
     margin-bottom: 1.5rem;
     font-size: 1.2rem;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid transparent;
     padding-bottom: 0.5rem;
 }
 
@@ -231,23 +229,27 @@ header {
     margin-top: -10px;
 }
 
-/* Overlay for when sidebar is open */
+/* Overlay for when sidebar is open - using backdrop-filter instead of background color */
 .overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: transparent;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     z-index: 999;
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.3s, visibility 0.3s;
+    pointer-events: none; /* Allow clicks to pass through when not active */
 }
 
 .overlay.open {
     opacity: 1;
     visibility: visible;
+    pointer-events: auto; /* Enable pointer events when active */
 }
 
 h1 {
