@@ -46,9 +46,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 // Load map data from GeoJSON
 async function loadMapData() {
     try {
-        // For now, we'll use a simplified version of Denmark's municipalities
-        // In a real application, you would load this from a proper GeoJSON file
-        const response = await fetch('https://raw.githubusercontent.com/codeforgermany/click_that_hood/main/public/data/denmark-municipalities.geojson');
+        // Load the local GeoJSON file
+        const response = await fetch('/Danmarkskortet/data/denmark-municipalities.geojson');
         if (!response.ok) throw new Error('Failed to load map data');
         
         const data = await response.json();

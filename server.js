@@ -26,6 +26,18 @@ app.get('/api/parish-demographics', (req, res) => {
     }
 });
 
+// API endpoint to get municipality GeoJSON data
+app.get('/api/municipalities', (req, res) => {
+    try {
+        const data = fs.readFileSync(path.join(__dirname, 'data', 'denmark-municipalities.geojson'), 'utf8');
+        res.setHeader('Content-Type', 'application/json');
+        res.send(data);
+    } catch (error) {
+        console.error('Error reading municipality GeoJSON data:', error);
+        res.status(500).json({ error: 'Failed to load municipality GeoJSON data' });
+    }
+});
+
 // API endpoint to get municipality demographic data
 app.get('/api/municipality-demographics', (req, res) => {
     try {
