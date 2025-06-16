@@ -121,8 +121,6 @@ function createMap() {
         .attr('class', 'municipality')
         .attr('d', path)
         .attr('data-name', d => d.properties.name || '')
-        .on('mouseover', handleMouseOver)
-        .on('mouseout', handleMouseOut);
     
     // Store the path generator and projection for later use
     g.path = path;
@@ -272,18 +270,6 @@ function updateLegend(colorScale, maxValue) {
     d3.select('#legend-max').text(maxValue.toLocaleString());
 }
 
-// Handle mouse over event
-function handleMouseOver(event, d) {
-    d3.select(this).style('stroke', '#333').style('stroke-width', 2);
-}
-
-// Handle mouseout event
-function handleMouseOut() {
-    window.mapElements.tooltip.style('opacity', 0);
-    d3.select(this)
-        .style('stroke', CONFIG.colors.border)
-        .style('stroke-width', 0.5);
-}
 
 
 
