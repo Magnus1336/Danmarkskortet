@@ -59,8 +59,7 @@ async function initMap() {
 // Fetch demographic data from the server
 async function fetchDemographicData() {
     try {
-        // For GitHub Pages deployment
-        const response = await fetch('/Danmarkskortet/api/municipality-demographics');
+        const response = await fetch('/api/municipality-demographics');
         if (!response.ok) throw new Error('Failed to load demographic data');
         return await response.json();
     } catch (error) {
