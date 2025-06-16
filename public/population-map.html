@@ -140,7 +140,24 @@
         .radio-group {
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
+        }
+        
+        .form-select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: white;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .form-select:focus {
+            border-color: #4a90e2;
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
         }
         
         .radio-container {
@@ -278,6 +295,25 @@
             <div class="sidebar-content">
                 <h3>Visualization Controls</h3>
                 
+                <!-- Variable Selector -->
+                <div class="control-group">
+                    <h4>Variable</h4>
+                    <select id="variable-selector" class="form-select">
+                        <option value="population_total">Total Population</option>
+                        <option value="population_male">Male Population</option>
+                        <option value="population_female">Female Population</option>
+                        <option value="births">Births</option>
+                        <option value="deaths">Deaths</option>
+                        <option value="net_migration">Net Migration</option>
+                        <option value="median_age">Median Age</option>
+                        <option value="avg_household_size">Avg. Household Size</option>
+                        <option value="households_total">Total Households</option>
+                        <option value="median_income_dkk">Median Income (DKK)</option>
+                        <option value="employment_rate">Employment Rate</option>
+                        <option value="unemployment_rate">Unemployment Rate</option>
+                    </select>
+                </div>
+
                 <!-- Region Type Selector -->
                 <div class="control-group">
                     <h4>Region Type</h4>

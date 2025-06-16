@@ -11,6 +11,23 @@ const CONFIG = {
 let mapData;
 let demographicData = {};
 let currentDate = '2025-01-01';
+let currentVariable = 'population_total';
+
+// Variable configurations
+const VARIABLES = {
+    population_total: { label: 'Total Population', format: d3.format(','), colorScheme: d3.interpolateBlues },
+    population_male: { label: 'Male Population', format: d3.format(','), colorScheme: d3.interpolateBlues },
+    population_female: { label: 'Female Population', format: d3.format(','), colorScheme: d3.interpolateBlues },
+    births: { label: 'Births', format: d3.format(','), colorScheme: d3.interpolateGreens },
+    deaths: { label: 'Deaths', format: d3.format(','), colorScheme: d3.interpolateReds },
+    net_migration: { label: 'Net Migration', format: d3.format(','), colorScheme: d3.interpolateRdBu },
+    median_age: { label: 'Median Age', format: d => d.toFixed(1), colorScheme: d3.interpolateViridis },
+    avg_household_size: { label: 'Avg. Household Size', format: d => d.toFixed(2), colorScheme: d3.interpolateYlOrRd },
+    households_total: { label: 'Total Households', format: d3.format(','), colorScheme: d3.interpolatePurples },
+    median_income_dkk: { label: 'Median Income (DKK)', format: d => d3.format(',')(Math.round(d)), colorScheme: d3.interpolateGreens },
+    employment_rate: { label: 'Employment Rate', format: d => (d * 100).toFixed(1) + '%', colorScheme: d3.interpolateGreens },
+    unemployment_rate: { label: 'Unemployment Rate', format: d => (d * 100).toFixed(1) + '%', colorScheme: d3.interpolateReds }
+};
 
 // Main function to initialize the map
 async function initMap() {
@@ -55,35 +72,70 @@ async function fetchDemographicData() {
 function processDemographicData(rows) {
     demographicData = {};
     
-    // Filter for the target date and process the data
-    const targetDate = new Date(currentDate);
-    
+    // Process all rows to store data by date
     rows.forEach(row => {
-        const rowDate = new Date(row.date);
+        const key = row.municipality;
+        const date = row.date;
         
-        // Only process data for the target date
-        if (rowDate.getTime() === targetDate.getTime()) {
-            const key = row.municipality;
-            
-            if (!demographicData[key]) {
-                demographicData[key] = {
-                    municipality: row.municipality,
-                    region: row.region,
-                    population: 0,
-                    population_male: 0,
-                    population_female: 0,
-                    date: row.date
-                };
-            }
-            
-            // Sum up the population data
-            demographicData[key].population += row.population_total || 0;
-            demographicData[key].population_male += row.population_male || 0;
-            demographicData[key].population_female += row.population_female || 0;
+        if (!demographicData[key]) {
+            demographicData[key] = {
+                municipality: row.municipality,
+                region: row.region,
+                dataByDate: {}
+            };
         }
+        
+        // Store all data for this municipality by date
+        if (!demographicData[key].dataByDate[date]) {
+            demographicData[key].dataByDate[date] = {};
+        }
+        
+        // Copy all properties from the row to the date-specific data
+        Object.assign(demographicData[key].dataByDate[date], row);
     });
     
+    // Update to show data for the current date
+    updateCurrentData();
+    
+    // Initialize the variable selector
+    initializeVariableSelector();
+    
     console.log('Processed demographic data:', demographicData);
+}
+
+// Update current data based on the selected date and variable
+function updateCurrentData() {
+    const targetDate = new Date(currentDate).toISOString().split('T')[0];
+    
+    Object.values(demographicData).forEach(area => {
+        const dateData = area.dataByDate[targetDate] || {};
+        
+        // Copy all properties from the date data to the area
+        Object.assign(area, dateData);
+        
+        // Ensure the current variable exists
+        if (area[currentVariable] === undefined) {
+            area[currentVariable] = 0;
+        }
+    });
+}
+
+// Initialize the variable selector
+function initializeVariableSelector() {
+    const selector = document.getElementById('variable-selector');
+    if (!selector) return;
+    
+    // Set up event listener for variable changes
+    selector.addEventListener('change', function() {
+        currentVariable = this.value;
+        updateCurrentData();
+        updateMap();
+    });
+    
+    // Set the default value
+    if (VARIABLES[currentVariable]) {
+        selector.value = currentVariable;
+    }
 }
 
 // Create the map visualization
@@ -177,35 +229,36 @@ function createMap() {
 // Update the map with the current data
 function updateMap() {
     const { g, path, tooltip } = window.mapElements;
+    const variableInfo = VARIABLES[currentVariable] || VARIABLES.population_total;
     
-    // Get all population values for the color scale
-    const populationValues = Object.values(demographicData)
-        .map(d => d.population)
-        .filter(d => d > 0);
+    // Get all values for the current variable
+    const values = Object.values(demographicData)
+        .map(d => d[currentVariable])
+        .filter(d => d !== undefined && d !== null && !isNaN(d));
     
-    if (populationValues.length === 0) {
-        console.error('No population data available for the selected date');
+    if (values.length === 0) {
+        console.error(`No data available for ${variableInfo.label} on the selected date`);
         return;
     }
     
-    // Create a color scale
+    // Create a color scale based on the current variable
     const colorScale = d3.scaleSequential()
-        .domain([0, d3.max(populationValues)])
-        .interpolator(d3.interpolateBlues);
+        .domain([d3.min(values), d3.max(values)])
+        .interpolator(variableInfo.colorScheme);
     
     // Update the legend
-    updateLegend(colorScale, d3.max(populationValues));
+    updateLegend(colorScale, d3.max(values), variableInfo);
     
     // Update the map features with the data
     g.selectAll('.municipality')
         .each(function(d) {
             const name = d.properties.name || '';
             const data = demographicData[name];
-            const population = data ? data.population : 0;
+            const value = data ? (data[currentVariable] || 0) : 0;
             
             d3.select(this)
-                .attr('fill', population > 0 ? colorScale(population) : '#f0f0f0')
-                .attr('data-population', population);
+                .attr('fill', value > 0 ? colorScale(value) : '#f0f0f0')
+                .attr(`data-${currentVariable}`, value);
         });
     
     // Add tooltip events
@@ -213,8 +266,8 @@ function updateMap() {
         .on('mousemove', function(event, d) {
             const name = d.properties.name || 'Unknown';
             const data = demographicData[name] || {};
-            const population = data.population || 0;
-            const formattedPopulation = population.toLocaleString();
+            const value = data[currentVariable] || 0;
+            const formattedValue = variableInfo.format ? variableInfo.format(value) : value;
             
             tooltip
                 .style('left', (event.pageX + 10) + 'px')
@@ -223,7 +276,7 @@ function updateMap() {
                 .html(`
                     <div><strong>${name}</strong></div>
                     <div>Region: ${data.region || 'N/A'}</div>
-                    <div>Population: ${formattedPopulation}</div>
+                    <div>${variableInfo.label}: ${formattedValue}</div>
                 `);
         })
         .on('mouseout', function() {
@@ -232,12 +285,24 @@ function updateMap() {
 }
 
 // Update the legend
-function updateLegend(colorScale, maxValue) {
+function updateLegend(colorScale, maxValue, variableInfo = VARIABLES.population_total) {
     const legendWidth = 300;
     const legendHeight = 20;
-    const legendSvg = d3.select('#legend-scale')
-        .html('') // Clear existing content
-        .style('width', legendWidth + 'px')
+    const legendContainer = d3.select('#legend-scale')
+        .style('width', legendWidth + 'px');
+    
+    // Clear existing content
+    legendContainer.html('');
+    
+    // Add title
+    legendContainer.append('div')
+        .style('font-weight', 'bold')
+        .style('margin-bottom', '5px')
+        .text(variableInfo.label);
+    
+    // Create SVG for the gradient
+    const legendSvg = legendContainer.append('svg')
+        .style('width', '100%')
         .style('height', legendHeight + 'px');
     
     // Create gradient definition
@@ -265,9 +330,23 @@ function updateLegend(colorScale, maxValue) {
         .attr('height', '100%')
         .style('fill', 'url(#legend-gradient)');
     
-    // Update the legend labels
-    d3.select('#legend-min').text('0');
-    d3.select('#legend-max').text(maxValue.toLocaleString());
+    // Create a container for the labels
+    const labelsContainer = legendContainer.append('div')
+        .style('display', 'flex')
+        .style('justify-content', 'space-between')
+        .style('margin-top', '5px');
+    
+    // Update the legend labels with proper formatting
+    const minValue = 0; // Assuming minimum is always 0 for these metrics
+    const format = variableInfo.format || (d => d);
+    
+    labelsContainer.append('div')
+        .attr('id', 'legend-min')
+        .text(format(minValue));
+        
+    labelsContainer.append('div')
+        .attr('id', 'legend-max')
+        .text(format(maxValue));
 }
 
 
