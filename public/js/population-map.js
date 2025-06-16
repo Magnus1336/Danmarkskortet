@@ -286,24 +286,37 @@ function updateMap() {
 
 // Update the legend
 function updateLegend(colorScale, maxValue, variableInfo = VARIABLES.population_total) {
-    const legendWidth = 300;
-    const legendHeight = 20;
-    const legendContainer = d3.select('#legend-scale')
-        .style('width', legendWidth + 'px');
+    const legendContainer = d3.select('#legend-scale');
     
     // Clear existing content
     legendContainer.html('');
     
+    // Create a container for the legend content
+    const legendContent = legendContainer.append('div')
+        .style('width', '100%')
+        .style('max-width', '800px')
+        .style('margin', '0 auto');
+    
     // Add title
-    legendContainer.append('div')
-        .style('font-weight', 'bold')
-        .style('margin-bottom', '5px')
+    legendContent.append('div')
+        .style('font-weight', '600')
+        .style('font-size', '14px')
+        .style('margin-bottom', '8px')
+        .style('color', '#333')
+        .style('text-align', 'center')
         .text(variableInfo.label);
     
-    // Create SVG for the gradient
-    const legendSvg = legendContainer.append('svg')
+    // Create a container for the gradient and labels
+    const gradientContainer = legendContent.append('div')
         .style('width', '100%')
-        .style('height', legendHeight + 'px');
+        .style('position', 'relative');
+    
+    // Create SVG for the gradient
+    const legendSvg = gradientContainer.append('svg')
+        .style('width', '100%')
+        .style('height', '20px')
+        .style('border-radius', '3px')
+        .style('overflow', 'hidden');
     
     // Create gradient definition
     const defs = legendSvg.append('defs');
@@ -324,28 +337,34 @@ function updateLegend(colorScale, maxValue, variableInfo = VARIABLES.population_
             .attr('stop-opacity', 1);
     }
     
-    // Create the gradient rectangle
+    // Create the gradient rectangle with a subtle border
     legendSvg.append('rect')
         .attr('width', '100%')
         .attr('height', '100%')
-        .style('fill', 'url(#legend-gradient)');
+        .style('fill', 'url(#legend-gradient)')
+        .style('stroke', '#ddd')
+        .style('stroke-width', '0.5px');
     
     // Create a container for the labels
-    const labelsContainer = legendContainer.append('div')
+    const labelsContainer = gradientContainer.append('div')
         .style('display', 'flex')
         .style('justify-content', 'space-between')
-        .style('margin-top', '5px');
+        .style('margin-top', '5px')
+        .style('font-size', '12px')
+        .style('color', '#555');
     
     // Update the legend labels with proper formatting
     const minValue = 0; // Assuming minimum is always 0 for these metrics
     const format = variableInfo.format || (d => d);
     
     labelsContainer.append('div')
-        .attr('id', 'legend-min')
+        .attr('class', 'legend-label')
+        .style('font-weight', '500')
         .text(format(minValue));
         
     labelsContainer.append('div')
-        .attr('id', 'legend-max')
+        .attr('class', 'legend-label')
+        .style('font-weight', '500')
         .text(format(maxValue));
 }
 

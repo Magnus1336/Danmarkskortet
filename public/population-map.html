@@ -25,11 +25,10 @@
             position: relative;
         }
         header {
-            background-color: white;
+            background-color: transparent;
             color: #333;
             padding: 1rem 0;
-            margin-bottom: 2rem;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 0;
             position: relative;
             z-index: 999;
         }
@@ -43,8 +42,32 @@
             top: 0;
             left: 0;
             width: 100%;
-            height: 100%;
+            height: calc(100% - 80px); /* Leave space for footer */
             background: white;
+        }
+        
+        .map-footer {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background: transparent;
+            padding: 15px 20px;
+            box-sizing: border-box;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        #legend-scale {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
         #population-map {
             width: 100%;
@@ -361,6 +384,11 @@
         <div class="map-container">
             <div id="population-map"></div>
         </div>
+        
+        <!-- Footer with legend -->
+        <footer class="map-footer">
+            <div id="legend-scale"></div>
+        </footer>
     </div>
 
     <script src="js/population-map.js"></script>
